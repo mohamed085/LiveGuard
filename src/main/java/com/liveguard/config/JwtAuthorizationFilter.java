@@ -3,6 +3,7 @@ package com.liveguard.config;
 import com.auth0.jwt.JWT;
 import com.liveguard.domain.LiveGuardUserDetails;
 import com.liveguard.domain.User;
+import com.liveguard.exciptions.NotFoundException;
 import com.liveguard.repository.UserRepository;
 import com.liveguard.util.JwtProperties;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -63,7 +64,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // Search in the DB if we find the user by token subject (username)
             // If so, then grab user details and create spring auth token using username, pass, authorities/roles
             if (email != null) {
-                User user = userRepository.findByEmail(email).get();
+                User user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new NotFoundException("This email not exist"));
                 LiveGuardUserDetails userDetails = new LiveGuardUserDetails(user);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email,null, userDetails.getAuthorities());
                 return auth;

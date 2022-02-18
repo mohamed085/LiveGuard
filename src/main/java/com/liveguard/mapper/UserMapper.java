@@ -22,4 +22,19 @@ public class UserMapper {
 
         return user;
     }
+
+    public static UserDTO UserToUserDTO(User user) {
+        log.debug("UserMapper | UserToUserDTO | " + user.toString());
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(user.getEmail());
+        userDTO.setName(user.getName());
+        userDTO.setPassword(null);
+        userDTO.setPhone(user.getPhone());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setDob(user.getDob());
+        userDTO.setAvatar(user.getAvatar());
+
+        return userDTO;
+    }
 }

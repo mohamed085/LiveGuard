@@ -8,6 +8,7 @@ import com.liveguard.exciptions.BadRequestException;
 import com.liveguard.exciptions.EmailAlreadyExistsException;
 import com.liveguard.exciptions.NotFoundException;
 import com.liveguard.mapper.UserMapper;
+import com.liveguard.payload.ApiResponse;
 import com.liveguard.payload.ResendVerifyMailRequest;
 import com.liveguard.payload.VerifyAccountRequest;
 import com.liveguard.payload.VerifyAccountResponse;
@@ -18,6 +19,7 @@ import com.liveguard.service.TokenService;
 import com.liveguard.service.UserService;
 import com.liveguard.service.VerificationCodeService;
 import com.liveguard.util.DateConverterUtil;
+import com.liveguard.util.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +27,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -185,6 +190,79 @@ public class UserServiceImp implements UserService {
         }
 
         return user;
+    }
+
+    @Override
+    public UserDTO userAccount() {
+        log.debug("UserService | userAccount | get user authenticated account");
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        log.debug("UserService | userAccount | user email: " + userEmail);
+
+        User user = findByEmail(userEmail)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        UserDTO userDTO = UserMapper.UserToUserDTO(user);
+        log.debug("UserService | userAccount | user info: " + userDTO.toString());
+
+        return userDTO;
+    }
+
+    @Override
+    public UserDTO updateCurrentUser(UserDTO userDTO) {
+
+        log.debug("UserService | updateCurrentUser | get user authenticated account");
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        log.debug("UserService | updateCurrentUser | user email: " + userEmail);
+        User user = findByEmail(userEmail)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        if (userDTO.getName() != null)
+            user.setName(userDTO.getName());
+
+        if (userDTO.getPhone() != null)
+            user.setPhone(userDTO.getPhone());
+
+        if (userDTO.getAddress() != null)
+            user.setAddress(userDTO.getAddress());
+
+        if (userDTO.getDob() != null)
+            user.setDob(userDTO.getDob());
+
+        User savedUser = userRepository.save(user);
+        return UserMapper.UserToUserDTO(savedUser);
+    }
+
+    @Override
+    public ApiResponse updateCurrentUserAvatar(MultipartFile multipartFile) throws IOException {
+        log.debug("UserService | updateCurrentUserAvatar");
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = findByEmail(userEmail)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        if (!multipartFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            log.debug("UserService | updateCurrentUserAvatar | file name: " + fileName);
+
+            user.setAvatar("/user-photos/" + user.getId() + "/" + fileName);
+            User savedUser = userRepository.save(user);
+
+            String uploadDir = "user-photos/" + savedUser.getId();
+
+            log.debug("UserService | updateCurrentUserAvatar | savedUser : " + savedUser.toString());
+            log.debug("UserService | updateCurrentUserAvatar | uploadDir : " + uploadDir);
+
+            FileUploadUtil.cleanDir(uploadDir);
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+            return new ApiResponse(true, "Image saved successfully");
+
+        }
+        else {
+            return new ApiResponse(false, "Image not found");
+        }
     }
 
     private VerifyAccountResponse CheckVerifyCode(VerifyAccountRequest request, VerificationCode code) {
