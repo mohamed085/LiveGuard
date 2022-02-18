@@ -15,17 +15,17 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequestMapping("/account")
-public class UserAccountController {
+public class AccountController {
 
     private final UserService userService;
 
-    public UserAccountController(UserService userService) {
+    public AccountController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping("")
     public ResponseEntity<UserDTO> userInfo() {
-        log.debug("UserAccountController | userInfo");
+        log.debug("AccountController | userInfo");
 
         UserDTO userDTO = userService.userAccount();
         return ResponseEntity
@@ -35,7 +35,7 @@ public class UserAccountController {
 
     @PutMapping("")
     public ResponseEntity<UserDTO> updateUserInfo(@RequestBody UserDTO userDTO) {
-        log.debug("UserAccountController | updateUserInfo");
+        log.debug("AccountController | updateUserInfo");
         UserDTO returnUserDTO = userService.updateCurrentUser(userDTO);
 
         return ResponseEntity
@@ -45,7 +45,7 @@ public class UserAccountController {
 
     @PutMapping("/avatar")
     public ResponseEntity<ApiResponse> updateUserAvatar(@RequestParam("file") MultipartFile multipartFile) {
-        log.debug("UserAccountController | updateUserAvatar");
+        log.debug("AccountController | updateUserAvatar");
 
         try {
             ApiResponse apiResponse = userService.updateCurrentUserAvatar(multipartFile);
