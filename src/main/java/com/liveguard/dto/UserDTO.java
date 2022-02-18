@@ -1,12 +1,12 @@
 package com.liveguard.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.liveguard.domain.Chip;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,4 +19,5 @@ public class UserDTO {
     private String address;
     private Date dob;
     private String avatar;
+    private Set<Chip> chips;
 }

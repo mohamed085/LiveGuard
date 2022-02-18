@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,7 @@ public class ChipType extends BaseEntity {
 
     private String type;
 
-    @ManyToMany(mappedBy = "chipTypes")
+    @OneToMany(mappedBy = "chipType")
     private Set<Chip> chips = new HashSet<>();
 
 }

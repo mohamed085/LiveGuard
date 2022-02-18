@@ -19,12 +19,9 @@ public class Chip extends BaseEntity {
     private String photo;
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "chips_types",
-            joinColumns = {@JoinColumn(name = "chip_id")},
-            inverseJoinColumns = {@JoinColumn(name = "chip_type_id")}
-    )
-    private Set<ChipType> chipTypes = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name="chip_type_id", nullable=false)
+    private ChipType chipType;
 
     @ManyToMany(mappedBy = "chips")
     private Set<User> users = new HashSet<>();

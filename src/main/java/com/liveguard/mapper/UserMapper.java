@@ -34,6 +34,7 @@ public class UserMapper {
         userDTO.setAddress(user.getAddress());
         userDTO.setDob(user.getDob());
         userDTO.setAvatar(user.getAvatar());
+        userDTO.setChips(user.getChips());
 
         return userDTO;
     }

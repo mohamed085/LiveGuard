@@ -54,7 +54,7 @@ public class AccountController {
                     .body(apiResponse);
         } catch (IOException e) {
             return ResponseEntity
-                    .ok()
+                    .internalServerError()
                     .body(new ApiResponse(false, "Failed to save photo"));
         }
     }
