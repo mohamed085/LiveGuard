@@ -1,5 +1,6 @@
 package com.liveguard.controller;
 
+import com.liveguard.dto.ChipAssociatedDetailsDTO;
 import com.liveguard.dto.ChipDTO;
 import com.liveguard.payload.ApiResponse;
 import com.liveguard.service.ChipService;
@@ -59,6 +60,25 @@ public class ChipController {
         return ResponseEntity
                 .ok()
                 .body(chipService.getChipsByType(chipTypeId));
+    }
+
+    @RequestMapping(value = "/{id}/chip_associated_details",  method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    public ResponseEntity<?> addChipAssociatedDetails(@PathVariable("id") Long id,
+                                                      @ModelAttribute ChipAssociatedDetailsDTO chipAssociatedDetailsDTO) {
+
+        log.debug("ChipTypeController | addChipAssociatedDetails | chip id: " + id);
+        log.debug("ChipTypeController | addChipAssociatedDetails | chipAssociatedDetailsDTO: " + chipAssociatedDetailsDTO.getName());
+
+        try {
+            ChipAssociatedDetailsDTO savedChipAssociatedDetailsDTO = chipService.addChipAssociatedDetails(id, chipAssociatedDetailsDTO);
+            return ResponseEntity
+                    .ok()
+                    .body(savedChipAssociatedDetailsDTO);
+        } catch (IOException e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(new ApiResponse(false, "Failed to save chip photo"));
+        }
     }
 
 

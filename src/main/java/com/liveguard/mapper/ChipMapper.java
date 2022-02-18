@@ -21,6 +21,9 @@ public class ChipMapper {
         chipDTO.setPhoto(chip.getPhoto());
         chipDTO.setChipType(ChipTypeMapper.chipTypeToChipTypeDTO(chip.getChipType()));
         chipDTO.setChipTypeId(chip.getChipType().getId());
+        if (chip.getChipAssociatedDetails() != null)
+            chipDTO.setChipAssociatedDetails(ChipAssociatedDetailsMapper.chipAssociatedDetailsToChipAssociatedDetailsDTO(chip.getChipAssociatedDetails()));
+
 
         return chipDTO;
     }
