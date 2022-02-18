@@ -1,6 +1,7 @@
 package com.liveguard.service;
 
 import com.liveguard.domain.User;
+import com.liveguard.dto.ChipDTO;
 import com.liveguard.dto.UserDTO;
 import com.liveguard.payload.ApiResponse;
 import com.liveguard.payload.ResendVerifyMailRequest;
@@ -9,6 +10,7 @@ import com.liveguard.payload.VerifyAccountResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -36,4 +38,8 @@ public interface UserService {
     UserDTO updateCurrentUser(UserDTO userDTO);
 
     ApiResponse updateCurrentUserAvatar(MultipartFile multipartFile) throws IOException;
+
+    ApiResponse addNewChip(Long id, String password);
+
+    List<ChipDTO> getCurrentUserChips();
 }

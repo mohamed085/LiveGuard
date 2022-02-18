@@ -1,23 +1,24 @@
 package com.liveguard.service.serviceImp;
 
 import com.liveguard.domain.AuthenticationType;
+import com.liveguard.domain.Chip;
 import com.liveguard.domain.User;
 import com.liveguard.domain.VerificationCode;
+import com.liveguard.dto.ChipDTO;
 import com.liveguard.dto.UserDTO;
 import com.liveguard.exciptions.BadRequestException;
 import com.liveguard.exciptions.EmailAlreadyExistsException;
 import com.liveguard.exciptions.NotFoundException;
+import com.liveguard.mapper.ChipMapper;
 import com.liveguard.mapper.UserMapper;
 import com.liveguard.payload.ApiResponse;
 import com.liveguard.payload.ResendVerifyMailRequest;
 import com.liveguard.payload.VerifyAccountRequest;
 import com.liveguard.payload.VerifyAccountResponse;
+import com.liveguard.repository.ChipRepository;
 import com.liveguard.repository.UserRepository;
 import com.liveguard.repository.UserRoleRepository;
-import com.liveguard.service.EmailService;
-import com.liveguard.service.TokenService;
-import com.liveguard.service.UserService;
-import com.liveguard.service.VerificationCodeService;
+import com.liveguard.service.*;
 import com.liveguard.util.DateConverterUtil;
 import com.liveguard.util.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -49,8 +52,12 @@ public class UserServiceImp implements UserService {
     private final VerificationCodeService verificationCodeService;
     private final EmailService emailService;
     private final TokenService tokenService;
+    private final ChipRepository chipRepository;
 
-    public UserServiceImp(UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, UserRoleRepository userRoleRepository, VerificationCodeService verificationCodeService, EmailService emailService, TokenService tokenService) {
+    public UserServiceImp(UserRepository userRepository, AuthenticationManager authenticationManager,
+                          PasswordEncoder passwordEncoder, UserRoleRepository userRoleRepository,
+                          VerificationCodeService verificationCodeService, EmailService emailService,
+                          TokenService tokenService, ChipRepository chipRepository) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
@@ -58,6 +65,7 @@ public class UserServiceImp implements UserService {
         this.verificationCodeService = verificationCodeService;
         this.emailService = emailService;
         this.tokenService = tokenService;
+        this.chipRepository = chipRepository;
     }
 
     @Override
@@ -263,6 +271,43 @@ public class UserServiceImp implements UserService {
         else {
             return new ApiResponse(false, "Image not found");
         }
+    }
+
+    @Override
+    public ApiResponse addNewChip(Long id, String password) {
+        log.debug("UserService | addNewChip | get user authenticated account");
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        log.debug("UserService | addNewChip | user email: " + userEmail);
+        User user = findByEmail(userEmail)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        Chip chip = chipRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("This chip id not found"));
+
+        if (chip.getPassword().equals(password)) {
+            user.getChips().add(chip);
+            userRepository.save(user);
+            return new ApiResponse(true, "Chip add successfully");
+        } else {
+            return new ApiResponse(true, "Chip not add successfully, password incorrect");
+        }
+    }
+
+    @Override
+    public List<ChipDTO> getCurrentUserChips() {
+        log.debug("UserService | addNewChip | get user authenticated account");
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        log.debug("UserService | addNewChip | user email: " + userEmail);
+        User user = findByEmail(userEmail)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        List<ChipDTO> chipDTOs = new ArrayList<>();
+        user.getChips().forEach(chip -> {
+            chipDTOs.add(ChipMapper.chipToChipDTO(chip));
+        });
+        return chipDTOs;
     }
 
     private VerifyAccountResponse CheckVerifyCode(VerifyAccountRequest request, VerificationCode code) {

@@ -15,7 +15,13 @@ public class ChipDTO implements Serializable {
     private Long id;
     private String name;
     private String photo;
+
+    @JsonProperty("photo_file")
     private MultipartFile photoFile;
+
+    @JsonProperty("chip_type")
     private ChipTypeDTO chipType;
+
+    @JsonProperty("chip_type_id")
     private Long chipTypeId;
 }

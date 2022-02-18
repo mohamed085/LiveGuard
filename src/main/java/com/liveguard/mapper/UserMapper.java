@@ -1,8 +1,12 @@
 package com.liveguard.mapper;
 
 import com.liveguard.domain.User;
+import com.liveguard.dto.ChipDTO;
 import com.liveguard.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 public class UserMapper {
@@ -26,6 +30,8 @@ public class UserMapper {
     public static UserDTO UserToUserDTO(User user) {
         log.debug("UserMapper | UserToUserDTO | " + user.toString());
 
+        Set<ChipDTO> chips = new HashSet<>();
+
         UserDTO userDTO = new UserDTO();
         userDTO.setEmail(user.getEmail());
         userDTO.setName(user.getName());
@@ -34,7 +40,10 @@ public class UserMapper {
         userDTO.setAddress(user.getAddress());
         userDTO.setDob(user.getDob());
         userDTO.setAvatar(user.getAvatar());
-        userDTO.setChips(user.getChips());
+        user.getChips().forEach(chip -> {
+            chips.add(ChipMapper.chipToChipDTO(chip));
+        });
+        userDTO.setChips(chips);
 
         return userDTO;
     }

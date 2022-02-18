@@ -86,4 +86,13 @@ public class ChipServiceImp implements ChipService {
         ChipDTO savedChipDTO = ChipMapper.chipToChipDTO(savedChip);
         return savedChipDTO;
     }
+
+    @Override
+    public List<ChipDTO> getChipsByType(Long chipTypeId) {
+        log.debug("ChipService | getChipsByType | chipTypeId: " + chipTypeId);
+        List<Chip> chips = chipRepository.findByChipTypeId(chipTypeId);
+        List<ChipDTO> chipDTOs = new ArrayList<>();
+        chips.forEach(chip -> chipDTOs.add(ChipMapper.chipToChipDTO(chip)));
+        return chipDTOs;
+    }
 }

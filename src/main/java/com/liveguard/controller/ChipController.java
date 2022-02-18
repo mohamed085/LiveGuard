@@ -1,13 +1,11 @@
 package com.liveguard.controller;
 
 import com.liveguard.dto.ChipDTO;
-import com.liveguard.dto.ChipTypeDTO;
 import com.liveguard.payload.ApiResponse;
 import com.liveguard.service.ChipService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -54,6 +52,14 @@ public class ChipController {
         }
     }
 
+    @GetMapping("/chipType/{chipTypeId}")
+    public ResponseEntity<?> getChipsByType(@PathVariable("chipTypeId") Long chipTypeId) {
+
+        log.debug("ChipTypeController | getChipsByType | chipTypeId: " + chipTypeId);
+        return ResponseEntity
+                .ok()
+                .body(chipService.getChipsByType(chipTypeId));
+    }
 
 
 }

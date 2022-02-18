@@ -19,5 +19,5 @@ public class UserDTO {
     private String address;
     private Date dob;
     private String avatar;
-    private Set<Chip> chips;
+    private Set<ChipDTO> chips;
 }

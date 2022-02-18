@@ -1,6 +1,7 @@
 package com.liveguard.controller;
 
 import com.liveguard.dto.UserDTO;
+import com.liveguard.payload.AddNewChipRequest;
 import com.liveguard.payload.ApiResponse;
 import com.liveguard.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -57,5 +58,21 @@ public class AccountController {
                     .internalServerError()
                     .body(new ApiResponse(false, "Failed to save photo"));
         }
+    }
+
+    @PostMapping("/add-new-chip")
+    public ResponseEntity<?> addNewChip(@RequestBody AddNewChipRequest addNewChipRequest) {
+
+        return ResponseEntity
+                .ok()
+                .body(userService.addNewChip(addNewChipRequest.getId(), addNewChipRequest.getPassword()));
+    }
+
+    @GetMapping("/chips")
+    private ResponseEntity<?> getUserChips() {
+
+        return ResponseEntity
+                .ok()
+                .body(userService.getCurrentUserChips());
     }
 }
