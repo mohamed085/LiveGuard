@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.*;
 
@@ -86,14 +87,75 @@ public class TaskServiceImp implements TaskService {
 
     @Override
     public List<TaskSimpleDataDTO> findByChipId(Long id) {
-        log.debug("TaskService | addTask | chipId: " + id);
+        log.debug("TaskService | findByChipId | chipId: " + id);
 
         List<Task> tasks = taskRepository.findByChipId(id);
-        List<TaskSimpleDataDTO> TaskSimpleDataDTO = new ArrayList<>();
+        List<TaskSimpleDataDTO> TaskSimpleDataDTOs = new ArrayList<>();
         tasks.forEach(task -> {
             UserSimpleDataDTO addByUser = new UserSimpleDataDTO(task.getAddByUser().getId(), task.getAddByUser().getEmail(), task.getAddByUser().getName(), task.getAddByUser().getAvatar());
-            TaskSimpleDataDTO.add(new TaskSimpleDataDTO(task.getId(), task.getName(), task.getMute(), addByUser));
+            TaskSimpleDataDTOs.add(new TaskSimpleDataDTO(task.getId(), task.getName(), task.getMute(), addByUser));
         });
-        return TaskSimpleDataDTO;
+        return TaskSimpleDataDTOs;
+    }
+
+    @Override
+    public List<TaskSimpleDataDTO> findByChipIdAndUser(Long id) {
+        log.debug("TaskService | findByChipIdAndUser | chipId: " + id);
+
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.debug("TaskService | findByChipIdAndUser | userEmail: " + userEmail);
+
+        User user = userService.findByEmail(userEmail)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        List<Task> tasks = taskRepository.findByChipIdAndAddByUserId(id, user.getId());
+        List<TaskSimpleDataDTO> TaskSimpleDataDTOs = new ArrayList<>();
+        tasks.forEach(task -> {
+            UserSimpleDataDTO addByUser = new UserSimpleDataDTO(task.getAddByUser().getId(), task.getAddByUser().getEmail(), task.getAddByUser().getName(), task.getAddByUser().getAvatar());
+            TaskSimpleDataDTOs.add(new TaskSimpleDataDTO(task.getId(), task.getName(), task.getMute(), addByUser));
+        });
+        return TaskSimpleDataDTOs;
+    }
+
+    @Override
+    public List<TaskSimpleDataDTO> findByChipIdAndSpecificUser(Long userId, Long chipId) {
+        log.debug("TaskService | findByChipIdAndSpecificUser | chipId: " + chipId);
+        log.debug("TaskService | findByChipIdAndSpecificUser | userId: " + userId);
+
+
+        User user = userService.findById(userId)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        List<Task> tasks = taskRepository.findByChipIdAndAddByUserId(chipId, userId);
+        List<TaskSimpleDataDTO> TaskSimpleDataDTOs = new ArrayList<>();
+        tasks.forEach(task -> {
+            UserSimpleDataDTO addByUser = new UserSimpleDataDTO(task.getAddByUser().getId(), task.getAddByUser().getEmail(), task.getAddByUser().getName(), task.getAddByUser().getAvatar());
+            TaskSimpleDataDTOs.add(new TaskSimpleDataDTO(task.getId(), task.getName(), task.getMute(), addByUser));
+        });
+        return TaskSimpleDataDTOs;
+    }
+
+    @Override
+    @Transactional
+    public void updateMuteStatus(Long id, Boolean muteStatus) {
+        log.debug("TaskService | updateMuteStatus | task id: " + id);
+        log.debug("TaskService | updateMuteStatus | mute status: " + muteStatus);
+
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.debug("TaskService | addTask | userEmail: " + userEmail);
+
+        User user = userService.findByEmail(userEmail)
+                .orElseThrow(() ->  new NotFoundException("This email not exist"));
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() ->  new NotFoundException("This task not exist"));
+
+        if (task.getAddByUser().getId() == user.getId()) {
+            taskRepository.updateMuteStatus(id, muteStatus);
+            log.debug("TaskService | updateMuteStatus | mute status update");
+        } else {
+            log.warn("TaskService | updateMuteStatus | user not have permission to mute task");
+            throw new BadRequestException("user not have permission to mute task");
+        }
     }
 }
