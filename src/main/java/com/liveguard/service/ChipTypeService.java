@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface ChipTypeService {
 
-    List<ChipType> findAll();
+    List<ChipTypeDTO> findAll();
 
-    ChipType findById(Long id);
+    ChipTypeDTO findById(Long id);
 
-    ChipType add(ChipTypeDTO chipTypeDTO);
+    ChipTypeDTO add(ChipTypeDTO chipTypeDTO);
 }

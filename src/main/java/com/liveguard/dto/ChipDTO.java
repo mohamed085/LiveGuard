@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,4 +28,6 @@ public class ChipDTO implements Serializable {
 
     @JsonProperty("chip_associated_details")
     private ChipAssociatedDetailsDTO chipAssociatedDetails;
+
+    private List<UserSimpleDataDTO> users;
 }

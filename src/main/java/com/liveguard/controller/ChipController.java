@@ -37,7 +37,7 @@ public class ChipController {
                 .body(chipService.findById(id));
     }
 
-    @RequestMapping(value = "",  method = RequestMethod.POST, consumes = { "multipart/form-data" })
+    @RequestMapping(value = "",  method = RequestMethod.POST, consumes = {"multipart/form-data"})
     public ResponseEntity<?> addChip(@ModelAttribute ChipDTO chipDTO) {
         log.debug("ChipTypeController | addChipType | chipTypeDTO: " + chipDTO.getName());
 
@@ -80,6 +80,5 @@ public class ChipController {
                     .body(new ApiResponse(false, "Failed to save chip photo"));
         }
     }
-
 
 }

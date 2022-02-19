@@ -17,7 +17,6 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 public class ChipType extends BaseEntity {
-
     private String type;
 
     @OneToMany(mappedBy = "chipType")

@@ -4,19 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChipAssociatedDetailsDTO {
+public class TaskSimpleDataDTO {
+    private Long id;
     private String name;
-    private String age;
-    private String phone;
-    private String photo;
-
-    @JsonProperty("photo_file")
-    private MultipartFile photoFile;
+    private Boolean mute;
 
     @JsonProperty("add_by_user")
     private UserSimpleDataDTO addByUser;

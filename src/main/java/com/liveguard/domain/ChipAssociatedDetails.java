@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 public class ChipAssociatedDetails extends BaseEntity {
-
     private String name;
     private String age;
     private String phone;

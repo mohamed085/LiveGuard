@@ -2,7 +2,7 @@ package com.liveguard.mapper;
 
 import com.liveguard.domain.ChipAssociatedDetails;
 import com.liveguard.dto.ChipAssociatedDetailsDTO;
-import com.liveguard.domain.UserSimpleData;
+import com.liveguard.dto.UserSimpleDataDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,7 +23,7 @@ public class ChipAssociatedDetailsMapper {
         chipAssociatedDetailsDTO.setAge(chipAssociatedDetails.getAge());
         chipAssociatedDetailsDTO.setPhoto(chipAssociatedDetails.getPhoto());
         chipAssociatedDetailsDTO.setPhone(chipAssociatedDetails.getPhone());
-        chipAssociatedDetailsDTO.setAddByUser(new UserSimpleData(
+        chipAssociatedDetailsDTO.setAddByUser(new UserSimpleDataDTO(
                 chipAssociatedDetails.getAddByUser().getId(),
                 chipAssociatedDetails.getAddByUser().getEmail(),
                 chipAssociatedDetails.getAddByUser().getName(),

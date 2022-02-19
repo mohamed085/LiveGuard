@@ -13,7 +13,6 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 public class VerificationCode extends BaseEntity {
-
     private String code;
     private int tempVerify;
     private Date createDate;

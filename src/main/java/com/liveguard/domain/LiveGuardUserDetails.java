@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class LiveGuardUserDetails  implements UserDetails {
-
     private User user;
 
     public LiveGuardUserDetails(User user) {

@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChipTypeDTO {
+public class UserSimpleDataDTO {
     private Long id;
-    private String type;
+    private String email;
+    private String name;
+    private String avatar;
 }

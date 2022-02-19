@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChipTypeDTO {
+public class ChipSimpleDataDTO {
     private Long id;
-    private String type;
+    private String name;
+    private String photo;
 }

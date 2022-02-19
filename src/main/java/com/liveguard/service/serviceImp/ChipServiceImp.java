@@ -10,6 +10,7 @@ import com.liveguard.mapper.ChipAssociatedDetailsMapper;
 import com.liveguard.mapper.ChipMapper;
 import com.liveguard.repository.ChipAssociatedDetailsRepository;
 import com.liveguard.repository.ChipRepository;
+import com.liveguard.repository.ChipTypeRepository;
 import com.liveguard.service.ChipService;
 import com.liveguard.service.ChipTypeService;
 import com.liveguard.service.UserService;
@@ -33,12 +34,14 @@ public class ChipServiceImp implements ChipService {
     private final ChipTypeService chipTypeService;
     private final UserService userService;
     private final ChipAssociatedDetailsRepository chipAssociatedDetailsRepository;
+    private final ChipTypeRepository chipTypeRepository;
 
-    public ChipServiceImp(ChipRepository chipRepository, ChipTypeService chipTypeService, UserService userService, ChipAssociatedDetailsRepository chipAssociatedDetailsRepository) {
+    public ChipServiceImp(ChipRepository chipRepository, ChipTypeService chipTypeService, UserService userService, ChipAssociatedDetailsRepository chipAssociatedDetailsRepository, ChipTypeRepository chipTypeRepository) {
         this.chipRepository = chipRepository;
         this.chipTypeService = chipTypeService;
         this.userService = userService;
         this.chipAssociatedDetailsRepository = chipAssociatedDetailsRepository;
+        this.chipTypeRepository = chipTypeRepository;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class ChipServiceImp implements ChipService {
         log.debug("ChipService | add | chipDTO: " + chipDTO.getName());
         Chip chip = ChipMapper.chipDTOToChip(chipDTO);
 
-        chip.setChipType(chipTypeService.findById(chipDTO.getChipTypeId()));
+        chip.setChipType(chipTypeRepository.findById(chipDTO.getChipTypeId()).get());
         chip.setPassword(String.valueOf(GenerateCodeUtil.generateRandomDigits(12)));
 
         Chip savedChip = new Chip();
@@ -158,4 +161,5 @@ public class ChipServiceImp implements ChipService {
 
         return ChipAssociatedDetailsMapper.chipAssociatedDetailsToChipAssociatedDetailsDTO(savedChipAssociatedDetails);
     }
+
 }

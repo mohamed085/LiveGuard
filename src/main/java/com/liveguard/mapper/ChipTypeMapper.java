@@ -17,6 +17,7 @@ public class ChipTypeMapper {
     public static ChipTypeDTO chipTypeToChipTypeDTO(ChipType chipType) {
         ChipTypeDTO chipTypeDTO = new ChipTypeDTO();
         chipTypeDTO.setType(chipType.getType());
+        chipTypeDTO.setId(chipType.getId());
 
         return chipTypeDTO;
     }

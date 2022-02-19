@@ -34,11 +34,10 @@ public class User extends BaseEntity {
     private String postalCode;
     private Date createdTime;
     private String resetPasswordToken;
-
-    private Boolean enable = false;
-    private Boolean accountNonExpired = false;
-    private Boolean credentialsNonExpired = false;
-    private Boolean accountNonLocked = false;
+    private Boolean enable;
+    private Boolean accountNonExpired;
+    private Boolean credentialsNonExpired;
+    private Boolean accountNonLocked;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -60,7 +59,6 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "chip_id")}
     )
     private Set<Chip> chips = new HashSet<>();
-
 
     public User(String name, String email, String password) {
         this.name = name;

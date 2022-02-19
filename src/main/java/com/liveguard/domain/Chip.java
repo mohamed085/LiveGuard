@@ -14,7 +14,6 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 public class Chip extends BaseEntity {
-
     private String name;
     private String photo;
     private String password;
@@ -29,5 +28,8 @@ public class Chip extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "chip_associated_details_id")
     private ChipAssociatedDetails chipAssociatedDetails;
+
+    @OneToMany(mappedBy = "chip")
+    private Set<Task> tasks = new HashSet<>();
 
 }

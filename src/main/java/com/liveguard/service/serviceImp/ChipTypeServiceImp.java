@@ -9,6 +9,7 @@ import com.liveguard.service.ChipTypeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -22,23 +23,26 @@ public class ChipTypeServiceImp implements ChipTypeService {
     }
 
     @Override
-    public List<ChipType> findAll() {
+    public List<ChipTypeDTO> findAll() {
         log.debug("ChipTypeService | findAll");
-        return (List<ChipType>) chipTypeRepository.findAll();
+        List<ChipType> chipTypes = (List<ChipType>) chipTypeRepository.findAll();
+        List<ChipTypeDTO> chipTypeDTOs = new ArrayList<>();
+        chipTypes.forEach(chipType -> chipTypeDTOs.add(ChipTypeMapper.chipTypeToChipTypeDTO(chipType)));
+        return chipTypeDTOs;
     }
 
     @Override
-    public ChipType findById(Long id) {
+    public ChipTypeDTO findById(Long id) {
         log.debug("ChipTypeService | findById | id: " + id);
         ChipType chipType = chipTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("This chip type not found"));
-        return chipType;
+        return ChipTypeMapper.chipTypeToChipTypeDTO(chipType);
     }
 
     @Override
-    public ChipType add(ChipTypeDTO chipTypeDTO) {
+    public ChipTypeDTO add(ChipTypeDTO chipTypeDTO) {
         log.debug("ChipTypeService | add: " + chipTypeDTO.toString());
         ChipType chipType = ChipTypeMapper.chipTypeDTOToChipType(chipTypeDTO);
-        return chipTypeRepository.save(chipType);
+        return ChipTypeMapper.chipTypeToChipTypeDTO(chipTypeRepository.save(chipType));
     }
 }
