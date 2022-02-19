@@ -2,6 +2,7 @@ package com.liveguard.controller;
 
 import com.liveguard.dto.TaskDTO;
 import com.liveguard.dto.TaskSimpleDataDTO;
+import com.liveguard.payload.ApiResponse;
 import com.liveguard.service.TaskDayService;
 import com.liveguard.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,42 @@ public class TaskController {
         return ResponseEntity
                 .ok()
                 .body(taskSimpleDataDTOs);
+    }
+
+    @GetMapping("/user/chip/{id}")
+    public ResponseEntity<?> getAllUserChipTasks(@PathVariable("id") Long id) {
+        log.debug("TaskController | getAllUserChipTasks | chip id: " + id);
+
+        List<TaskSimpleDataDTO> taskSimpleDataDTOs = taskService.findByChipIdAndUser(id);
+        return ResponseEntity
+                .ok()
+                .body(taskSimpleDataDTOs);
+    }
+
+    @GetMapping("/{userId}/chip/{id}")
+    public ResponseEntity<?> getAllSpecificUserChipTasks(@PathVariable("id") Long id,
+                                                         @PathVariable("userId") Long userId) {
+
+        log.debug("TaskController | getAllSpecificUserChipTasks | chip id: " + id);
+        log.debug("TaskController | getAllSpecificUserChipTasks | user id: " + userId);
+
+        List<TaskSimpleDataDTO> taskSimpleDataDTOs = taskService.findByChipIdAndUser(id);
+        return ResponseEntity
+                .ok()
+                .body(taskSimpleDataDTOs);
+    }
+
+    @GetMapping("/{id}/{mute}")
+    private ResponseEntity<?> editMuteMode(@PathVariable("id") Long id,
+                                           @PathVariable("mute") Boolean muteStatus) {
+
+        log.debug("TaskController | getAllChipTasks | task id: " + id);
+        log.debug("TaskController | getAllChipTasks | mute value: " + muteStatus);
+
+        taskService.updateMuteStatus(id, muteStatus);
+        return ResponseEntity
+                .ok()
+                .body(new ApiResponse(true, "Status updated successfully"));
     }
 
 }
